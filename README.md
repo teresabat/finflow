@@ -1,177 +1,163 @@
-FinFlow - Sistema de Gerenciamento Financeiro
-FinFlow é um sistema de gerenciamento financeiro pessoal que permite a gestão de categorias de despesas e transações. O sistema é construído utilizando PHP, MySQL, Tailwind CSS e Chart.js para visualização de dados, com foco em usabilidade e boa experiência para o usuário.
+# FinFlow - Sistema de Gerenciamento de Finanças
 
-Funcionalidades
-Cadastro e Login: Permite que os usuários se cadastrem e façam login com autenticação segura.
+FinFlow é uma aplicação web para controle financeiro pessoal, permitindo aos usuários registrar, categorizar e gerenciar suas transações financeiras de forma simples e eficiente. O sistema foi desenvolvido utilizando **PHP**, **MySQL**, **Tailwind CSS**, e **JavaScript** para os gráficos interativos.
 
-Gerenciamento de Categorias: Os usuários podem criar, editar e excluir categorias de despesas.
+## Funcionalidades
 
-Dashboard Financeiro: Exibe uma visão geral das transações do usuário com gráficos dinâmicos usando Chart.js.
+- **Cadastro e Login de Usuários**: Registro e autenticação de usuários com sessões seguras.
+- **Gerenciamento de Transações**: Cadastro, edição e exclusão de transações financeiras.
+- **Categorias de Despesas**: Organização das transações por categorias (Ex: Alimentação, Lazer, Transporte).
+- **Dashboard Interativo**: Visualização das transações com gráficos interativos.
+- **Exportação de Dados**: Opções para exportar as transações para **PDF** ou **Excel**.
+- **Interface Responsiva**: Design moderno e responsivo utilizando **Tailwind CSS**.
 
-CRUD de Transações: Registro, visualização, edição e exclusão de transações financeiras.
+## Tecnologias Utilizadas
 
-Design Responsivo: Usando Tailwind CSS para garantir que a interface seja totalmente responsiva para dispositivos móveis e desktop.
+- **Frontend**:
+  - HTML
+  - CSS (Tailwind CSS)
+  - JavaScript
+- **Backend**:
+  - PHP
+  - MySQL
+  - PDO (para conexão com o banco de dados)
+- **Gráficos**:
+  - Chart.js para gráficos interativos
 
-Tecnologias Utilizadas
-PHP: Linguagem de programação para backend.
+## Estrutura do Projeto
 
-MySQL: Banco de dados relacional para armazenar as informações do usuário e transações.
+A estrutura do projeto é organizada da seguinte forma:
 
-Tailwind CSS: Framework CSS utilitário para um design responsivo e moderno.
+```bash
+/finflow
+│
+├── /includes        # Arquivos de configuração e funções auxiliares
+│   ├── db.php       # Conexão com o banco de dados
+│   ├── functions.php # Funções auxiliares do sistema
+│
+├── /public          # Arquivos públicos acessíveis pela web
+│   ├── index.php    # Página principal (Dashboard)
+│   ├── login.php    # Página de login
+│   ├── register.php # Página de registro de usuário
+│   ├── categories.php # Gerenciamento de categorias
+│   ├── new_transaction.php # Adicionar nova transação
+│   ├── edit_transaction.php # Editar transação
+│   ├── delete_transaction.php # Excluir transação
+│
+├── /assets          # Imagens, ícones e outros recursos estáticos
+│   ├── logo.png
+│   └── icons.svg
+│
+└── README.md        # Este arquivo
+````
 
-Chart.js: Biblioteca para visualização de gráficos dinâmicos.
+### Como Rodar o Projeto
+**1. Clonar o Repositório**
 
-HTML5 & JavaScript: Para construção das páginas e interatividade.
-
-Instalação
-Requisitos
-Servidor Apache ou Nginx
-
-PHP (recomendado versão 7.4 ou superior)
-
-MySQL
-
-Composer (para gerenciamento de dependências PHP, caso necessário)
-
-Passos para Configuração
-Clone o repositório:
-
-bash
-Copiar
-Editar
+Clone este repositório para o seu ambiente local:
+````bash
 git clone https://github.com/usuario/finflow.git
 cd finflow
-Configuração do banco de dados:
+````
 
-Crie um banco de dados MySQL chamado finflow.
+### 2.Configuração do Ambiente
+**Banco de Dados**: Configure o banco de dados no db.php com suas credenciais locais.
 
-Importe as tabelas com o seguinte script SQL:
+**Dependências**: Não há dependências externas além do próprio PHP e MySQL. Apenas certifique-se de ter o XAMPP ou MAMP instalado para rodar o Apache e o MySQL localmente.
 
-sql
-Copiar
-Editar
+### 3. Importar o Banco de Dados
+Crie um banco de dados no MySQL chamado finflow.
+
+Importe o esquema do banco de dados utilizando o seguinte SQL:
+````SQL
 CREATE DATABASE finflow;
 
 USE finflow;
 
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
-    name VARCHAR(255) NOT NULL,
+    user_id INT NOT NULL,
+    name VARCHAR(100) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE transactions (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
-    category_id INT,
-    amount DECIMAL(10, 2) NOT NULL,
+    user_id INT NOT NULL,
+    category_id INT NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
     description TEXT,
-    date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (category_id) REFERENCES categories(id)
 );
-Configuração do arquivo de banco de dados:
+````
 
-Edite o arquivo includes/db.php com as suas credenciais do banco de dados MySQL:
+### 4. Iniciar o Servidor
+Se estiver usando o XAMPP, inicie o **Apache** e o **MySQL** no painel de controle.
 
-php
-Copiar
-Editar
-<?php
-$host = 'localhost';
-$dbname = 'finflow';
-$username = 'root';
-$password = ''; // sua senha do MySQL
-$charset = 'utf8mb4';
+### 5. Acessar a Aplicação
+Abra o navegador e acesse a aplicação:
+````
+http://localhost/finflow/index.php
+````
 
-$dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
-try {
-    $pdo = new PDO($dsn, $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Não foi possível conectar ao banco de dados: " . $e->getMessage());
-}
-?>
-Instalação do Composer (se necessário):
+## Como Contribuir
+Fork este repositório.
 
-Se você usa o Composer para gerenciar pacotes, execute:
+Crie uma branch para a sua feature: git checkout -b minha-feature.
 
-bash
-Copiar
-Editar
-composer install
-Iniciar o servidor local:
+Faça suas modificações.
 
-Se você está usando o PHP built-in server, execute:
+Adicione e commit suas alterações: git commit -am 'Adiciona nova feature'.
 
-bash
-Copiar
-Editar
-php -S localhost:8000
-Acesse a aplicação em http://localhost:8000.
+Envie para o repositório remoto: git push origin minha-feature.
 
-Uso
-Página de Login
-Ao acessar o sistema, o usuário verá a tela de login.
+Abra um Pull Request no GitHub.
 
-O usuário pode fazer login com e-mail e senha, ou se cadastrar caso ainda não tenha uma conta.
+## Comandos do Git
+Aqui estão os comandos básicos que você pode usar para trabalhar com Git:
 
-Dashboard
-Após o login, o usuário será redirecionado para o Dashboard, onde poderá visualizar suas transações e categorias.
+### 1. Inicializar o repositório
+````
+git init
+````
 
-O gráfico exibido no dashboard apresenta uma visualização das transações por categoria usando Chart.js.
+### 2. Adicionar arquivos ao repositório
+````
+git add .
+````
 
-Gerenciamento de Categorias
-Na página de Gerenciamento de Categorias, o usuário pode criar novas categorias, editar ou excluir as existentes.
+### 3. Fazer commit
+````
+git commit -m "Descrição do seu commit"
+````
 
-Gerenciamento de Transações
-O usuário pode registrar transações financeiras associadas a uma categoria específica.
+### 4. Conectar ao repositório remoto
+````
+git remote add origin https://github.com/usuario/finflow.git
+````
 
-O sistema permite editar e excluir transações.
+### 5. Enviar alterações para o GitHub
+````
+git push -u origin master
+````
 
-Comandos do Terminal
-Aqui estão os comandos úteis para trabalhar com o projeto:
+### 6. Puxar as últimas alterações
+````
+git pull origin master
+````
 
-Instalar dependências (se usar Composer):
+## Licença
+Este projeto está licenciado sob a licença **MIT** - veja o arquivo **LICENSE** para mais detalhes.
 
-bash
-Copiar
-Editar
-composer install
-Rodar o servidor local (PHP built-in server):
 
-bash
-Copiar
-Editar
-php -S localhost:8000
-Migrar o banco de dados (se necessário): Se você utilizar um sistema de migração de banco de dados, use o comando correspondente. Caso não esteja utilizando migrador, basta importar o SQL manualmente.
-
-Rodar os testes (se houver testes configurados):
-
-bash
-Copiar
-Editar
-php vendor/bin/phpunit
-Contribuição
-Se você quiser contribuir para este projeto, sinta-se à vontade para enviar um pull request. Antes de enviar, por favor, abra uma issue para discutir o que você deseja mudar ou adicionar.
-
-Fork o repositório.
-
-Crie uma nova branch para suas modificações (git checkout -b feature/nova-feature).
-
-Faça commit das suas alterações (git commit -am 'Adiciona nova feature').
-
-Envie para o repositório remoto (git push origin feature/nova-feature).
-
-Abra um Pull Request.
-
-Licença
-Este projeto está licenciado sob a MIT License - veja o arquivo LICENSE para mais detalhes.
+Feito com ❤️ por **teresabat**
